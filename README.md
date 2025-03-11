@@ -34,14 +34,30 @@ npm install
 yarn install
 ```
 
-3. Run the development server:
+3. Set up environment variables:
+   - Copy `.env.example` to `.env.local`
+   - Replace the placeholder with your Semantic Scholar API key
+   - You can obtain an API key from [Semantic Scholar API](https://www.semanticscholar.org/product/api)
+
+```bash
+# .env.local
+SEMANTIC_SCHOLAR_API_KEY=your_semantic_scholar_api_key_here
+```
+
+4. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Deployment
+
+When deploying to Vercel, make sure to set the following environment variable in your Vercel project settings:
+
+- `SEMANTIC_SCHOLAR_API_KEY`: Your Semantic Scholar API key
 
 ## Technology Stack
 

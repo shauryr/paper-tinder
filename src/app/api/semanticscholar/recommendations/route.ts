@@ -1,51 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// The recommendations API has a different base URL than the main graph API
 const API_BASE_URL = "https://api.semanticscholar.org/recommendations/v1";
-const API_KEY = "ntBvggeKiV43UDqpKXqRO2VSLJmI1Pt97u4Ewggv";
+const API_KEY = process.env.SEMANTIC_SCHOLAR_API_KEY;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const { positivePaperIds, negativePaperIds, limit = 10, fields } = body;
     
-    if (!body.positivePaperIds || !Array.isArray(body.positivePaperIds) || body.positivePaperIds.length === 0) {
+    if (!positivePaperIds || !Array.isArray(positivePaperIds) || positivePaperIds.length === 0) {
       return NextResponse.json(
         { error: "positivePaperIds array is required and must not be empty" },
         { status: 400 }
       );
     }
-
-    // Ensure fields is properly formatted
-    const fields = body.fields || "paperId,title,abstract,year,referenceCount,citationCount,influentialCitationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,publicationVenue,authors,url,externalIds";
     
-    // Prepare the request body in the format expected by the API
-    // Always limit to 5 papers regardless of what was requested
+    // Default fields if not provided
+    const fieldsToFetch = fields || "paperId,title,abstract,year,referenceCount,citationCount,influentialCitationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,publicationVenue,authors,url,externalIds";
+    
+    // Construct the request body
     const requestBody = {
-      positivePaperIds: body.positivePaperIds,
-      // Include negative paper IDs if provided
-      negativePaperIds: body.negativePaperIds && body.negativePaperIds.length > 0 ? body.negativePaperIds : undefined,
-      limit: 5, // Hard-coded to 5 papers
+      positivePaperIds,
+      negativePaperIds: negativePaperIds || [],
     };
-
+    
     // Log the request we're making for debugging
-    console.log(`Making request to: ${API_BASE_URL}/papers?fields=${encodeURIComponent(fields)}`);
-    console.log("Request body:", JSON.stringify(requestBody));
-
+    console.log(`Making recommendation request with ${positivePaperIds.length} positive papers and ${negativePaperIds?.length || 0} negative papers`);
+    console.log(`API Key available: ${!!API_KEY}`);
+    
+    // Prepare headers
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+    
+    // Add API key to headers if available
+    if (API_KEY) {
+      headers["x-api-key"] = API_KEY;
+    }
+    
+    // The recommendations API uses a different URL structure
     const response = await fetch(
-      `${API_BASE_URL}/papers?fields=${encodeURIComponent(fields)}`, 
+      `${API_BASE_URL}/papers?fields=${encodeURIComponent(fieldsToFetch)}&limit=${limit}`, 
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "x-api-key": API_KEY,
-        },
+        headers,
         body: JSON.stringify(requestBody),
       }
     );
-
+    
     // Log response status for debugging
     console.log(`Semantic Scholar API Response: ${response.status} ${response.statusText}`);
-
+    
     if (!response.ok) {
       // Try to get error details from response body
       let errorDetail = "";
@@ -58,13 +65,13 @@ export async function POST(request: NextRequest) {
       
       throw new Error(`Semantic Scholar API error: ${response.status} ${response.statusText} - ${errorDetail}`);
     }
-
+    
     const data = await response.json();
     
     // Format the response to match expected format
     const processed = {
       ...data,
-      papers: data.recommendedPapers || data || [], // Adapt to the actual response format
+      papers: data.recommendedPapers || data.papers || [], // Adapt to the actual response format
     };
     
     return NextResponse.json(processed);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL = "https://api.semanticscholar.org/graph/v1";
-const API_KEY = "ntBvggeKiV43UDqpKXqRO2VSLJmI1Pt97u4Ewggv";
+const API_KEY = process.env.SEMANTIC_SCHOLAR_API_KEY;
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,17 +16,24 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    
     // Log the request we're making for debugging
     console.log(`Making request to: ${API_BASE_URL}/author/${authorId}/papers?fields=${encodeURIComponent(fields)}&limit=${limit}`);
+
+    // Prepare headers
+    const headers: HeadersInit = {
+      "Accept": "application/json",
+    };
+    
+    // Add API key to headers if available
+    if (API_KEY) {
+      headers["x-api-key"] = API_KEY;
+    }
 
     const response = await fetch(
       `${API_BASE_URL}/author/${authorId}/papers?fields=${encodeURIComponent(fields)}&limit=${limit}`, 
       {
-        headers: {
-          "Accept": "application/json",
-          "x-api-key": API_KEY,
-        },
+        headers,
         next: {
           revalidate: 60, // Cache for 60 seconds
         }
@@ -62,4 +69,4 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching paper details:", error);
     return NextResponse.json({ error: "Failed to fetch paper details" }, { status: 500 });
   }
-} 
+}

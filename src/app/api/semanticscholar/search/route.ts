@@ -1,41 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL = "https://api.semanticscholar.org/graph/v1";
-const API_KEY = "ntBvggeKiV43UDqpKXqRO2VSLJmI1Pt97u4Ewggv";
+const API_KEY = process.env.SEMANTIC_SCHOLAR_API_KEY;
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get("query");
+    const limit = searchParams.get("limit") || "10";
     
     if (!query) {
       return NextResponse.json(
-        { error: "Query parameter is required" },
+        { error: "query parameter is required" },
         { status: 400 }
       );
     }
-
-    // Construct the API URL with proper fields for author metadata
-    const apiUrl = `${API_BASE_URL}/author/search?query=${encodeURIComponent(query)}&fields=name,url,paperCount,citationCount,hIndex,affiliations&limit=10`;
     
     // Log the request we're making for debugging
-    console.log(`Making request to: ${apiUrl}`);
-
-    const response = await fetch(apiUrl, {
-      headers: {
-        "Accept": "application/json",
-        "x-api-key": API_KEY,
-      },
-      next: {
-        revalidate: 60, // Cache for 60 seconds
+    console.log(`Making request to: ${API_BASE_URL}/author/search?query=${encodeURIComponent(query)}&limit=${limit}`);
+    
+    // Prepare headers
+    const headers: HeadersInit = {
+      "Accept": "application/json",
+    };
+    
+    // Add API key to headers if available
+    if (API_KEY) {
+      headers["x-api-key"] = API_KEY;
+    }
+    
+    const response = await fetch(
+      `${API_BASE_URL}/author/search?query=${encodeURIComponent(query)}&limit=${limit}`, 
+      {
+        headers,
+        next: {
+          revalidate: 60, // Cache for 60 seconds
+        }
       }
-    });
-
+    );
+    
     // Log response status for debugging
     console.log(`Semantic Scholar API Response: ${response.status} ${response.statusText}`);
-
+    
     if (!response.ok) {
-      // Try to get error details from response body
       let errorDetail = "";
       try {
         const errorData = await response.json();
