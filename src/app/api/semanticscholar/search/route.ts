@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL = "https://api.semanticscholar.org/graph/v1";
-const API_KEY = process.env.SEMANTIC_SCHOLAR_API_KEY;
+const API_KEY = process.env.SEMANTIC_SCHOLAR_API_KEY ;
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    // Log the request we're making for debugging
-    console.log(`Making request to: ${API_BASE_URL}/author/search?query=${encodeURIComponent(query)}&limit=${limit}`);
+    // Construct the API URL with proper fields for author metadata
+    const apiUrl = `${API_BASE_URL}/author/search?query=${encodeURIComponent(query)}&fields=name,url,paperCount,citationCount,hIndex,affiliations&limit=${limit}`;
     
     // Prepare headers
     const headers: HeadersInit = {
@@ -29,18 +29,12 @@ export async function GET(request: NextRequest) {
       headers["x-api-key"] = API_KEY;
     }
     
-    const response = await fetch(
-      `${API_BASE_URL}/author/search?query=${encodeURIComponent(query)}&limit=${limit}`, 
-      {
-        headers,
-        next: {
-          revalidate: 60, // Cache for 60 seconds
-        }
+    const response = await fetch(apiUrl, {
+      headers,
+      next: {
+        revalidate: 60, // Cache for 60 seconds
       }
-    );
-    
-    // Log response status for debugging
-    console.log(`Semantic Scholar API Response: ${response.status} ${response.statusText}`);
+    });
     
     if (!response.ok) {
       let errorDetail = "";
@@ -84,6 +78,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(processed);
   } catch (error) {
     console.error("Error searching for authors:", error);
-    return NextResponse.json({ error: "Failed to search for authors" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to search for authors" },
+      { status: 500 }
+    );
   }
 }
