@@ -306,15 +306,41 @@ export function PaperSwiper() {
       >
         <Card className="overflow-hidden border-2">
           <CardHeader className="pb-3">
-            <CardTitle className="text-xl">
-              {currentPaper.title}
-            </CardTitle>
-            {currentPaper.publicationVenue?.name && (
-              <CardDescription className="flex items-center gap-1">
-                <BookOpen className="h-4 w-4" />
-                {currentPaper.publicationVenue.name}
-              </CardDescription>
-            )}
+            <div className="flex items-center justify-between gap-4">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-12 w-12 rounded-full bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-600 shrink-0"
+                onClick={handleDislike}
+                aria-label="Dislike paper"
+                title="Dislike (Left Arrow)"
+              >
+                <ThumbsDown className="h-5 w-5" />
+              </Button>
+              
+              <div className="flex-1">
+                <CardTitle className="text-xl">
+                  {currentPaper.title}
+                </CardTitle>
+                {currentPaper.publicationVenue?.name && (
+                  <CardDescription className="flex items-center gap-1">
+                    <BookOpen className="h-4 w-4" />
+                    {currentPaper.publicationVenue.name}
+                  </CardDescription>
+                )}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-12 w-12 rounded-full bg-green-100 text-green-500 hover:bg-green-200 hover:text-green-600 shrink-0"
+                onClick={handleLike}
+                aria-label="Like paper"
+                title="Like (Right Arrow)"
+              >
+                <ThumbsUp className="h-5 w-5" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             {currentPaper.abstract && (
@@ -354,46 +380,15 @@ export function PaperSwiper() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="justify-between border-t pt-4">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-12 w-12 rounded-full bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-600"
-              onClick={handleDislike}
-              aria-label="Dislike paper"
-              title="Dislike (Left Arrow)"
-            >
-              <ThumbsDown className="h-5 w-5" />
-            </Button>
-            
+          <CardFooter className="justify-center border-t pt-4">
             <a 
               href={currentPaper.url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary hidden sm:flex"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
             >
               <ExternalLink className="h-4 w-4" /> View on Semantic Scholar
             </a>
-            
-            <a 
-              href={currentPaper.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary sm:hidden"
-            >
-              <ExternalLink className="h-4 w-4" /> View
-            </a>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-12 w-12 rounded-full bg-green-100 text-green-500 hover:bg-green-200 hover:text-green-600"
-              onClick={handleLike}
-              aria-label="Like paper"
-              title="Like (Right Arrow)"
-            >
-              <ThumbsUp className="h-5 w-5" />
-            </Button>
           </CardFooter>
         </Card>
       </div>
