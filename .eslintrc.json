@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-console": ["warn", { "allow": ["error", "warn"] }],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+} 
