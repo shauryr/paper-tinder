@@ -14,7 +14,7 @@ export interface AuthorSearchResult {
   next?: string;
   offset?: number;
   total?: number;
-  data?: any[];
+  data?: Author[];
 }
 
 export interface PaperAuthor {

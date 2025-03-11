@@ -1,6 +1,6 @@
-# Scholar Tinder
+# Paper Tinder
 
-Scholar Tinder is a Tinder-like interface for discovering relevant research papers based on your academic interests. The application allows researchers to find their Semantic Scholar profile, fetch their published papers, and receive paper recommendations that they can browse through with a swipe interface.
+Paper Tinder is a Tinder-like interface for discovering relevant research papers based on your academic interests. The application allows researchers to find their Semantic Scholar profile, fetch their published papers, and receive paper recommendations that they can browse through with a swipe interface.
 
 ## Features
 

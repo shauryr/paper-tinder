@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { Author, Paper } from "./types";
 import { getPaperRecommendations } from "./api";
 import { toast } from "sonner";
@@ -72,20 +72,9 @@ export function ScholarTinderProvider({ children }: { children: ReactNode }) {
     }
   }, [recommendedPapers, currentPaper]);
 
-  // Check if we need to auto-refresh based on swipe count
-  useEffect(() => {
-    const AUTO_REFRESH_THRESHOLD = 5;
-    
-    if (swipeCount >= AUTO_REFRESH_THRESHOLD && !processing) {
-      console.log(`Auto-refreshing after ${swipeCount} swipes`);
-      refreshRecommendations();
-      resetSwipeCount();
-    }
-  }, [swipeCount, processing]);
-
-  const resetSwipeCount = () => {
+  const resetSwipeCount = useCallback(() => {
     setSwipeCount(0);
-  };
+  }, []);
 
   const addLikedPaper = (paper: Paper) => {
     setLikedPapers((prev) => {
@@ -142,7 +131,7 @@ export function ScholarTinderProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const refreshRecommendations = async () => {
+  const refreshRecommendations = useCallback(async () => {
     // Only attempt to refresh if we have positive papers to base recommendations on
     if (!authorPapers.length && !likedPapers.length) {
       toast.error("No papers available to base recommendations on");
@@ -218,7 +207,18 @@ export function ScholarTinderProvider({ children }: { children: ReactNode }) {
     } finally {
       setProcessing(false);
     }
-  };
+  }, [authorPapers, likedPapers, dislikedPapers, setRecommendedPapers, setProcessing, resetSwipeCount]);
+
+  // Check if we need to auto-refresh based on swipe count
+  useEffect(() => {
+    const AUTO_REFRESH_THRESHOLD = 5;
+    
+    if (swipeCount >= AUTO_REFRESH_THRESHOLD && !processing) {
+      console.log(`Auto-refreshing after ${swipeCount} swipes`);
+      refreshRecommendations();
+      resetSwipeCount();
+    }
+  }, [swipeCount, processing, refreshRecommendations, resetSwipeCount]);
 
   const resetState = () => {
     setAuthor(null);

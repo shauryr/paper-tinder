@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       try {
         const errorData = await response.json();
         errorDetail = JSON.stringify(errorData);
-      } catch (e) {
+      } catch {
         errorDetail = "Could not parse error response";
       }
       
@@ -59,10 +59,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(processed);
   } catch (error) {
-    console.error("Error in author papers API route:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unknown error occurred" },
-      { status: 500 }
-    );
+    console.error("Error fetching paper details:", error);
+    return NextResponse.json({ error: "Failed to fetch paper details" }, { status: 500 });
   }
 } 

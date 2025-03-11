@@ -6,7 +6,7 @@ import { AuthorSearch } from "@/components/author-search";
 import { PaperSwiper } from "@/components/paper-swiper";
 import { LikedPapersList } from "@/components/liked-papers-list";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Menu, Heart } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 
 export default function Home() {
   const { author, resetState, likedPapers } = useScholarTinder();
@@ -47,7 +47,7 @@ export default function Home() {
     <main className="min-h-screen bg-slate-50">
       <div className="container mx-auto py-8 px-4">
         <header className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-primary">Scholar Tinder</h1>
+          <h1 className="text-3xl font-bold text-primary">Paper Tinder</h1>
           <div className="flex items-center gap-2">
             {author && likedPapers.length > 0 && isMobile && (
               <Button 

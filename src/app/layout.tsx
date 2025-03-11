@@ -7,7 +7,7 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Scholar Tinder - Discover Relevant Research Papers",
+  title: "Paper Tinder - Discover Relevant Research Papers",
   description: "A Tinder-like interface for discovering research papers that match your academic interests",
 };
 

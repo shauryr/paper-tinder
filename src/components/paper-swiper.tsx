@@ -26,7 +26,6 @@ export function PaperSwiper() {
     setProcessing,
     refreshRecommendations,
     swipeCount,
-    resetSwipeCount,
   } = useScholarTinder();
 
   const [animationClass, setAnimationClass] = useState("");
@@ -35,23 +34,7 @@ export function PaperSwiper() {
   const [error, setError] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // On initial load, fetch paper recommendations based on author papers
-  useEffect(() => {
-    if (authorPapers.length > 0 && recommendedPapers.length === 0 && !processing) {
-      fetchRecommendations();
-    }
-  }, [authorPapers, recommendedPapers.length, processing]);
-
-  // Check when we run out of papers
-  useEffect(() => {
-    if (recommendedPapers.length === 0 && !loadingRecommendations && authorPapers.length > 0) {
-      setNoMorePapers(true);
-    } else {
-      setNoMorePapers(false);
-    }
-  }, [recommendedPapers.length, loadingRecommendations, authorPapers.length]);
-
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async () => {
     setLoadingRecommendations(true);
     setProcessing(true);
     setError(null);
@@ -133,7 +116,23 @@ export function PaperSwiper() {
       setLoadingRecommendations(false);
       setProcessing(false);
     }
-  };
+  }, [authorPapers, likedPapers, dislikedPapers, setRecommendedPapers, setProcessing]);
+
+  // On initial load, fetch paper recommendations based on author papers
+  useEffect(() => {
+    if (authorPapers.length > 0 && recommendedPapers.length === 0 && !processing) {
+      fetchRecommendations();
+    }
+  }, [authorPapers, recommendedPapers.length, processing, fetchRecommendations]);
+
+  // Check when we run out of papers
+  useEffect(() => {
+    if (recommendedPapers.length === 0 && !loadingRecommendations && authorPapers.length > 0) {
+      setNoMorePapers(true);
+    } else {
+      setNoMorePapers(false);
+    }
+  }, [recommendedPapers.length, loadingRecommendations, authorPapers.length]);
 
   const handleRefresh = () => {
     refreshRecommendations();

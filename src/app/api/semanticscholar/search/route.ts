@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       try {
         const errorData = await response.json();
         errorDetail = JSON.stringify(errorData);
-      } catch (e) {
+      } catch {
         errorDetail = "Could not parse error response";
       }
       
@@ -51,7 +51,15 @@ export async function GET(request: NextRequest) {
     
     // Format the response to match our expected format
     const processed = {
-      authors: data.data?.map((author: any) => ({
+      authors: data.data?.map((author: {
+        authorId: string;
+        name?: string;
+        url?: string;
+        paperCount?: number;
+        citationCount?: number;
+        hIndex?: number;
+        affiliations?: string[];
+      }) => ({
         authorId: author.authorId,
         name: author.name || "",
         url: author.url || `https://www.semanticscholar.org/author/${author.authorId}`,
@@ -68,10 +76,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(processed);
   } catch (error) {
-    console.error("Error in author search API route:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unknown error occurred" },
-      { status: 500 }
-    );
+    console.error("Error searching for authors:", error);
+    return NextResponse.json({ error: "Failed to search for authors" }, { status: 500 });
   }
 }

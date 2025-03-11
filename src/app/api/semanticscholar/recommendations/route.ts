@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       try {
         const errorData = await response.json();
         errorDetail = JSON.stringify(errorData);
-      } catch (e) {
+      } catch {
         errorDetail = "Could not parse error response";
       }
       
@@ -69,9 +69,9 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(processed);
   } catch (error) {
-    console.error("Error in recommendations API route:", error);
+    console.error("Error fetching recommendations:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unknown error occurred" },
+      { error: "Failed to fetch recommendations" },
       { status: 500 }
     );
   }

@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Author, Paper } from "@/lib/types";
 import { searchAuthors, getAuthorPapers } from "@/lib/api";
 import { useScholarTinder } from "@/lib/state";
