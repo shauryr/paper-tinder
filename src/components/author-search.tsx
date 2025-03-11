@@ -105,8 +105,7 @@ export function AuthorSearch() {
         </div>
         <div className="prose prose-slate mx-auto text-muted-foreground">
           <p>
-            🎯 Find your academic soulmate by searching for a researcher whose work inspires you.
-            We&apos;ll use their papers and your preferences to curate a personalized reading list.
+            🎯 Find research papers that match your interests.
           </p>
           <div className="flex justify-center gap-6 py-4 text-sm">
             <div className="flex items-center gap-2">

@@ -213,6 +213,14 @@ export function PaperSwiper() {
   if (loadingRecommendations || processing) {
     return (
       <div className="w-full max-w-xl mx-auto">
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-semibold mb-2">🔍 Finding Your Next Papers!</h3>
+          <p className="text-muted-foreground">
+            {swipeCount >= 4 
+              ? "Using your swipes to discover more papers you'll love..." 
+              : "Loading more exciting papers for you..."}
+          </p>
+        </div>
         <Card>
           <CardHeader>
             <Skeleton className="h-8 w-3/4 mb-2" />
@@ -286,7 +294,7 @@ export function PaperSwiper() {
         </div>
         <div className="flex items-center gap-3">
           <div className="text-xs text-muted-foreground">
-            Auto-refresh in {5 - swipeCount} swipes
+            Auto-refresh in {4 - swipeCount} swipes
           </div>
           <Button 
             variant="outline" 
@@ -361,7 +369,11 @@ export function PaperSwiper() {
               
               {currentPaper.authors && currentPaper.authors.length > 0 && (
                 <span className="flex items-center gap-1">
-                  <Users className="h-4 w-4" /> {currentPaper.authors.length} Authors
+                  <Users className="h-4 w-4" />
+                  <span className="line-clamp-1">
+                    {currentPaper.authors.slice(0, 3).map(author => author.name).join(", ")}
+                    {currentPaper.authors.length > 3 && " et al."}
+                  </span>
                 </span>
               )}
               

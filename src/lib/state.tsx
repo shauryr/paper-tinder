@@ -211,10 +211,13 @@ export function ScholarTinderProvider({ children }: { children: ReactNode }) {
 
   // Check if we need to auto-refresh based on swipe count
   useEffect(() => {
-    const AUTO_REFRESH_THRESHOLD = 5;
+    const AUTO_REFRESH_THRESHOLD = 4;
     
     if (swipeCount >= AUTO_REFRESH_THRESHOLD && !processing) {
       console.log(`Auto-refreshing after ${swipeCount} swipes`);
+      toast.info("🎯 Learning from your swipes...", {
+        description: "Finding more papers that match your interests!"
+      });
       refreshRecommendations();
       resetSwipeCount();
     }
