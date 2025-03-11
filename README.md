@@ -23,8 +23,8 @@ Paper Tinder is a Tinder-like interface for discovering relevant research papers
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/scholar-tinder.git
-cd scholar-tinder
+git clone https://github.com/shauryr/paper-tinder.git
+cd paper-tinder
 ```
 
 2. Install dependencies:
